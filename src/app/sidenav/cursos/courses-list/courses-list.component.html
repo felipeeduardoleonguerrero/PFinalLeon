@@ -1,0 +1,86 @@
+<!--Lista de estudiantes con table de Angular material-->
+
+<h1 appTitleSize>Lista de cursos</h1>
+<table #table mat-table [dataSource]="courses" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="course">
+      <th mat-header-cell *matHeaderCellDef>Cursos</th>
+      <td mat-cell *matCellDef="let element">{{element.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="info">
+      <th mat-header-cell *matHeaderCellDef>
+      </th>
+      <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="Info icon" (click)="openDialog(element)">
+            <mat-icon>info</mat-icon>
+          </button>
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>
+      </th>
+      <td mat-cell *matCellDef="let element" >
+          <button mat-icon-button aria-label="Edit icon" (click)="editCourse(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef> 
+        </th>
+        <td mat-cell *matCellDef="let element">
+            <button mat-icon-button aria-label="Delete icon" (click)="deleteCourse(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+        </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #detail>
+
+  <!--div>
+        <p><em>Más detalles de:</em></p>
+    <h3>{{courseDetails.name}}</h3>
+    <hr><br>
+    <p><em>Costo:</em> {{courseDetails.cost}}</p>
+  </div-->
+
+  <table #table mat-table [dataSource]="registrations" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="student">
+      <th mat-header-cell *matHeaderCellDef>Estudiante</th>
+      <td mat-cell *matCellDef="let element">{{element.studentSurname}}, {{element.studentName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="course">
+      <th mat-header-cell *matHeaderCellDef>Curso</th>
+      <td mat-cell *matCellDef="let element">{{element.course}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef> 
+        </th>
+        <td mat-cell *matCellDef="let element">
+            <button mat-icon-button aria-label="Delete icon" (click)="deleteRegistration(element.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+        </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsTwo"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsTwo;"></tr>
+  </table>
+
+</ng-template>
+
+<!--Añadir nuevo estudiante-->
+
+<div class="button-container">
+    <button mat-raised-button color="accent" (click)="addCourse()">Nuevo curso</button>
+</div>

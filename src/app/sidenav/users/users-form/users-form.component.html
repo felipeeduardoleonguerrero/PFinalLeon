@@ -1,0 +1,29 @@
+<!--Formulario para agergar y editar estudiantes con Angular material y Reactive forms-->
+
+<h1 appTitleSizeTwo>Añadir/cambiar usuario</h1>
+<form [formGroup]="usersForm" (ngSubmit)="onSubmit()">
+
+<mat-form-field appearance="fill">
+    <mat-label>Usuario</mat-label>
+    <input formControlName="name" matInput>
+    <div *ngIf="usersForm.get('name')?.errors?.['required'] && !usersForm.get('name')?.pristine" class="alert alert-danger">Campo requerido</div>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Contraseña</mat-label>
+    <input formControlName="password" matInput>
+    <div *ngIf="usersForm.get('password')?.errors?.['required'] && !usersForm.get('password')?.pristine" class="alert alert-danger">Campo requerido</div>
+  </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Rol</mat-label>
+        <mat-select formControlName="role">
+            <mat-option *ngFor="let role of roles" [value]="role.name">{{role.displayName}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+  <button [disabled]="usersForm.invalid" mat-raised-button color="accent" type="submit">Enviar</button>
+  
+</form>
+
+  <a class="cancel-link" [routerLink]="'/home/users/list'" (click)="goBack()">Cancelar</a>

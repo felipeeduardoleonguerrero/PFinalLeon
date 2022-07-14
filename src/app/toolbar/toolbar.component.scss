@@ -1,0 +1,12 @@
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+.home-link, .home-link:hover, .home-link:active, .home-link:focus, .home-link:visited {
+    color:white;
+}
+
+.home-link span, .home-link .mat-icon {
+    display:inline-block;
+    vertical-align: middle;
+}

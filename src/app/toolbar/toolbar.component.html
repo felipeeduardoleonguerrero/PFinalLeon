@@ -1,0 +1,25 @@
+<!--Barra superior con título de aplicación-->
+
+<mat-toolbar color="primary">
+  
+    <mat-toolbar-row>
+      <!--button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="openSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button-->
+      <a class="home-link" [routerLink]="''">
+        <mat-icon aria-hidden="false" aria-label="school">school</mat-icon>
+        <span>&nbsp;Gestor de estudiantes</span>
+      </a>
+      <span class="example-spacer"></span>
+      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+        <mat-icon>{{asyncHeart | async}}</mat-icon>
+      </button>
+      <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+       <mat-icon>{{asyncShare | async}}</mat-icon>
+     </button>
+     <button mat-icon-button class="example-icon" aria-label="Logout" (click)="logOut()">
+      <mat-icon>logout</mat-icon>
+    </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  

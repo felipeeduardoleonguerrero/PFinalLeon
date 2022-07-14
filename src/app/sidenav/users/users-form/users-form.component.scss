@@ -1,0 +1,12 @@
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.cancel-link, .cancel-link:hover, .cancel-link:active, .cancel-link:visited, .cancel-link:focus {
+    color:gray;
+    text-decoration:underline;
+    display:inline-block;
+    margin:15px 0;
+}

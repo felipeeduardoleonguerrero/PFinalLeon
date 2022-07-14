@@ -1,0 +1,53 @@
+<h1>Añadir/cambiar inscripción</h1>
+
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="fill">
+
+        <mat-label>Nombre</mat-label>
+
+        <input formControlName="studentName" matInput>
+
+        <div *ngIf="registrationForm.get('studentName')?.errors?.['required'] && !registrationForm.get('studentName')?.pristine" class="alert alert-danger">Campo requerido</div>
+
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+
+        <mat-label>Apellido</mat-label>
+
+        <input formControlName="studentSurname" matInput>
+
+        <div *ngIf="registrationForm.get('studentSurname')?.errors?.['required'] && !registrationForm.get('studentSurname')?.pristine" class="alert alert-danger">Campo requerido</div>
+
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+
+        <mat-label>Curso</mat-label>
+
+        <mat-select formControlName="course" multiple>
+            <mat-option value="Angular">Angular</mat-option>
+            <mat-option value="Javascript">Javascript</mat-option>
+            <mat-option value="PHP">PHP</mat-option>
+        </mat-select>
+
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+
+        <mat-label>Periodo</mat-label>
+
+        <mat-select formControlName="period">
+          <mat-option value="Primero">Primero</mat-option>
+          <mat-option value="Segundo">Segundo</mat-option>
+          <mat-option value="Tercero">Tercero</mat-option>
+        </mat-select>
+
+      </mat-form-field>
+
+  <button [disabled]="registrationForm.invalid" mat-raised-button color="accent" type="submit">Enviar</button>
+
+  <a class="cancel-link" [routerLink]="'/home/registration/list'" (click)="goBack()">Cancelar</a>
+
+</form>

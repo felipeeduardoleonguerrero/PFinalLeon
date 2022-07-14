@@ -1,0 +1,29 @@
+<h1 appTitleSizeTwo>Añadir/cambiar curso</h1>
+
+<form [formGroup]="coursesForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="fill">
+
+        <mat-label>Nombre</mat-label>
+
+        <input formControlName="name" matInput>
+
+        <div *ngIf="coursesForm.get('name')?.errors?.['required'] && !coursesForm.get('name')?.pristine" class="alert alert-danger">Campo requerido</div>
+
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+
+        <mat-label>Costo</mat-label>
+
+        <input formControlName="cost" matInput>
+
+        <div *ngIf="coursesForm.get('cost')?.errors?.['required'] && !coursesForm.get('cost')?.pristine" class="alert alert-danger">Campo requerido</div>
+
+    </mat-form-field>
+
+  <button [disabled]="coursesForm.invalid" mat-raised-button color="accent" type="submit">Enviar</button>
+
+</form>
+
+<a class="cancel-link" [routerLink]="'/home/courses/list'" (click)="goBack()">Cancelar</a>

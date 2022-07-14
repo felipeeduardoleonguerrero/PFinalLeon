@@ -1,0 +1,24 @@
+<!--Formulario iniciar sesión como administrador o como usuario-->
+
+<h1>Iniciar sesión</h1>
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+<mat-form-field appearance="fill">
+    <mat-label>Usuario</mat-label>
+    <input formControlName="user" matInput>
+    <div *ngIf="loginForm.get('user')?.errors?.['required'] && !loginForm.get('user')?.pristine" class="alert alert-danger">Campo requerido</div>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Contraseña</mat-label>
+    <input formControlName="password" matInput>
+    <div *ngIf="loginForm.get('password')?.errors?.['required'] && !loginForm.get('password')?.pristine" class="alert alert-danger">Campo requerido</div>
+  </mat-form-field>
+
+  <button mat-raised-button color="accent" type="submit" [disabled]="loginForm.invalid">Enviar</button>
+
+</form>
+<br>
+<p style="color:gray;">Administrador: admin, password</p>
+<p style="color:gray;">Usuario: user, password</p>

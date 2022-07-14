@@ -1,0 +1,41 @@
+<!--Barra lateral desplegable-->
+
+<mat-drawer-container class="example-container" autosize>
+
+  <!--Menú lateral-->
+
+    <mat-drawer #drawer class="example-sidenav" mode="side">
+    <!--Los siguientes elementos de lista de Angular Material dirigen al usuario a los tres módulos principales de la aplicación: Alumnos, inscripciones y cursos-->
+      <mat-list role="list" class="side-menu">
+        <mat-list-item role="listitem">
+          <mat-icon class="menu-icon" aria-hidden="false" aria-label="student">person</mat-icon>&nbsp;<a [routerLink]="'/home/students/list'">Estudiantes</a>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <mat-icon class="menu-icon" aria-hidden="false" aria-label="course">book</mat-icon>&nbsp;<a [routerLink]="'/home/courses/list'">Cursos</a>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <mat-icon class="menu-icon" aria-hidden="false" aria-label="registration">how_to_reg</mat-icon>&nbsp;<a [routerLink]="'/home/registration/list'">Inscripciones</a>
+        </mat-list-item>
+        <mat-list-item role="listitem" *ngIf="usersService.adminLoggedIn">
+          <mat-icon class="menu-icon" aria-hidden="user" aria-label="person">account_circle</mat-icon>&nbsp;<a [routerLink]="'/home/users/list'">Usuarios</a>
+        </mat-list-item>
+      </mat-list>
+      
+    </mat-drawer>
+
+  <!--Contenido principal-->
+
+    <div class="example-sidenav-content">
+
+      <div class="sp-content">
+        <div class="button-container">
+          <button type="button" mat-stroked-button color="accent" (click)="drawer.toggle()"><span class="material-icons">menu_open</span>Menú lateral</button>
+        </div>
+        <router-outlet></router-outlet>
+
+      </div>
+      
+    </div>
+  
+</mat-drawer-container>
+  

@@ -1,0 +1,63 @@
+<!--Cambio de curso para los estudiantes-->
+
+<h1 appTitleSize>Inscripciones</h1>
+<table #table mat-table [dataSource]="students" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="student">
+      <th mat-header-cell *matHeaderCellDef>Estudiante</th>
+      <td mat-cell *matCellDef="let element">{{element.studentSurname}}, {{element.studentName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="course">
+        <th mat-header-cell *matHeaderCellDef>Curso</th>
+        <td mat-cell *matCellDef="let element">{{element.course}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="period">
+        <th mat-header-cell *matHeaderCellDef>Periodo</th>
+        <td mat-cell *matCellDef="let element">{{element.period}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="info">
+        <th mat-header-cell *matHeaderCellDef>
+        </th>
+        <td mat-cell *matCellDef="let element">
+            <button mat-icon-button aria-label="Info icon" (click)="openDialog(element)">
+              <mat-icon>info</mat-icon>
+            </button>
+        </td>
+      </ng-container>
+    
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>
+      </th>
+      <td mat-cell *matCellDef="let element" >
+          <button mat-icon-button aria-label="Edit icon" (click)="editRegistration(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<!--Modal con detalles-->
+
+<ng-template #detail>
+
+  <div>
+    <p><em>Más detalles de:</em></p>
+    <h3>{{studentDetails.studentName}} {{studentDetails.studentSurname}}</h3>
+    <hr><br>
+    <p><em>Email:</em> {{studentDetails.email}}</p>
+    <p><em>País:</em> {{studentDetails.country}}</p>
+  </div>
+
+</ng-template>
+
+<!--Añadir nuevo estudiante-->
+
+<div class="button-container">
+    <button mat-raised-button color="accent" (click)="addRegistration()">Nueva inscripción</button>
+</div>
