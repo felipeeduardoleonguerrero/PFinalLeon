@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { loadUserss } from '../Store/Features/Users/users.actions';
 
 @Component({
   selector: 'app-users',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsersComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store:Store<any>) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.store.dispatch(loadUserss());
   }
 
 }

@@ -7,6 +7,10 @@ import { MaterialModule } from 'src/app/modules/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InscripcionesComponent } from './inscripciones.component';
 import { InscripcionesRoutingModule } from './inscripciones-routing.module';
+import { RegistrationEffects } from '../Store/Features/Registration/registration.effects';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import * as fromRegistration from '../Store/Features/Registration/registration.reducer';
 
 //Módulo que sirve a la lista de inscripciones y sus registros
 
@@ -21,7 +25,9 @@ import { InscripcionesRoutingModule } from './inscripciones-routing.module';
     InscripcionesRoutingModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forFeature(fromRegistration.registrationFeatureKey, fromRegistration.reducer),
+    EffectsModule.forFeature([RegistrationEffects])
   ],
   exports: [
     AddRegistrationComponent,

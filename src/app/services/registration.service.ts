@@ -19,8 +19,8 @@ export class RegistrationService {
 
     //Eliminación de inscripcripción
 
-    removeRegistration(id:number):Observable<Registration> {
-      return this.http.delete<Registration>(this.rootUrl + id);
+    removeRegistration(id:string):Observable<Registration> {
+      return this.http.delete<Registration>(this.rootUrl + `${id}`);
     }
 
 }

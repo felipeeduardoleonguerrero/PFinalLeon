@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { loadRegistrations } from '../Store/Features/Registration/registration.actions';
 
 @Component({
   selector: 'app-inscripciones',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InscripcionesComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store:Store<any>) { }
 
   ngOnInit(): void {
+    this.store.dispatch(loadRegistrations());
   }
 
 }

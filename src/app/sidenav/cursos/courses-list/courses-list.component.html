@@ -44,14 +44,7 @@
 
 <ng-template #detail>
 
-  <!--div>
-        <p><em>Más detalles de:</em></p>
-    <h3>{{courseDetails.name}}</h3>
-    <hr><br>
-    <p><em>Costo:</em> {{courseDetails.cost}}</p>
-  </div-->
-
-  <table #table mat-table [dataSource]="registrations" class="mat-elevation-z8">
+  <table #detailTable mat-table [dataSource]="registrations" class="mat-elevation-z8">
 
     <ng-container matColumnDef="student">
       <th mat-header-cell *matHeaderCellDef>Estudiante</th>

@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { StudentsService } from 'src/app/services/students.service';
+import { postRegistration } from '../../Store/Features/Registration/registration.actions';
 
 @Component({
   selector: 'app-add-registration',
@@ -15,9 +17,9 @@ export class AddRegistrationComponent implements OnInit, OnDestroy {
   
   subscriptions: Subscription;
 
-  studentToEdit: any;
+  registrationToEdit: any;
 
-  constructor(private fb:FormBuilder, private studentsService:StudentsService, private router:Router) { }
+  constructor(private fb:FormBuilder, private studentsService:StudentsService, private router:Router, private store:Store<any>) { }
 
   ngOnInit(): void {
 
@@ -37,19 +39,19 @@ export class AddRegistrationComponent implements OnInit, OnDestroy {
       this.subscriptions.add(
         this.studentsService.getStudentToEdit().subscribe(
   
-          val=>this.studentToEdit=val
+          val=>this.registrationToEdit=val
   
         )
       )
 
     //Al editar al curso se llenan los valores del formulario con patchValue
 
-    if(this.studentToEdit){
+    if(this.registrationToEdit){
 
-      this.registrationForm.get('studentName')?.patchValue(this.studentToEdit.studentName);
-      this.registrationForm.get('studentSurname')?.patchValue(this.studentToEdit.studentSurname);
-      this.registrationForm.get('course')?.patchValue(this.studentToEdit.course);
-      this.registrationForm.get('period')?.patchValue(this.studentToEdit.period);
+      this.registrationForm.get('studentName')?.patchValue(this.registrationToEdit.studentName);
+      this.registrationForm.get('studentSurname')?.patchValue(this.registrationToEdit.studentSurname);
+      this.registrationForm.get('course')?.patchValue(this.registrationToEdit.course);
+      this.registrationForm.get('period')?.patchValue(this.registrationToEdit.period);
       
     }
 
@@ -57,47 +59,23 @@ export class AddRegistrationComponent implements OnInit, OnDestroy {
 
   onSubmit(){
 
-    //Suscripción a los cursos
-
-    let students=[];
-
-    this.subscriptions.add(
-      this.studentsService.getStudentsList().subscribe(
-
-        val=>students=val
-
-      )
-    )
-
-    //Generamos un id para el nuevo curso. Si no hay cursos, el índice del nuevo curso será igual a index (1).
+    const registration = this.registrationForm.value;
     
-    let index=1;
-
-    if (students.length>0 && !this.studentToEdit) {
-
-      index=students.length+1;
-      this.registrationForm.value['id']=index;
-      students.push(this.registrationForm.value);
-
-    } else if (students.length===0 && !this.studentToEdit){
-
-      this.registrationForm.value['id']=index;
-      students.push(this.registrationForm.value)
-
+    //Actualizar o actualizar el registro a la MOCKAPI
+    
+    if(!this.registrationToEdit){
+      this.store.dispatch(postRegistration({registration:registration}));
+      this.router.navigate(['/home/registration/list']);
+    } else {
+      registration['id']=this.registrationToEdit.id;
+      this.studentsService.updateStudent(registration).subscribe(
+        (val)=>{
+          this.studentsService.studentToEdit=null;
+          this.router.navigate(['/home/registration/list'])
+        }
+      )
     }
 
-    //Actualizamos al curso encontrando su id.
-
-    if (this.studentToEdit) {
-        let indexOfStudent = students.findIndex((student)=>student.id===this.studentToEdit.id);
-       students[indexOfStudent]=this.registrationForm.value;
-       this.studentsService.studentToEdit=null;
-    }
-
-    //Igualamos students con studentsList (students.servivce). ! (null assertion value) avisa a Angular que el valor no será igual a null.
-
-    this.studentsService.studentsList=students!;
-    this.router.navigate(["home/registration/list"]);
   }
 
   /*cancelRegistration() {

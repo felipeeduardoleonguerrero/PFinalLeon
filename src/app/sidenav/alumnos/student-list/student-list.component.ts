@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { Students } from 'src/app/services/students';
 import { StudentsService } from 'src/app/services/students.service';
 import { UsersService } from 'src/app/services/users.service';
-import { deleteStudents, getDetailedStudents, postStudents } from '../../Store/Features/Students/students.actions';
+import { deleteStudents, getDetailedStudents } from '../../Store/Features/Students/students.actions';
 import { selectStudentsDetailedSuccess, selectStudentsSuccess } from '../../Store/Features/Students/students.selectors';
 
 @Component({
@@ -35,15 +35,13 @@ export class StudentListComponent implements OnInit, OnDestroy {
 
   @ViewChild('table') table: MatTable<any>;
 
-  constructor(private router:Router, private studentsService:StudentsService, public dialogDetails: MatDialog, private dialog: MatDialog, private usersService:UsersService, private store: Store<any>) {
+  constructor(private router:Router, private studentsService:StudentsService, public dialogDetails: MatDialog, private dialog: MatDialog, private usersService:UsersService, private store: Store<any>, private changeDetectorRefs: ChangeDetectorRef) {
     this.detailsData = new MatTableDataSource();
    }
 
-  ngOnInit(): void {
+  ngOnInit() {
 
     this.subscriptions=new Subscription();
-
-    //this.getStudents();
 
     this.subscriptions.add(
       this.usersService.adminStatus().subscribe(
@@ -60,60 +58,32 @@ export class StudentListComponent implements OnInit, OnDestroy {
       this.displayedColumns = ['student', 'email', 'country'];
     }
 
-    //Arreglo de estudiantes de Ngrx effects
+    //Arreglo de estudiantes desde store
     
-    // this.store.select(selectStudentsSuccess).subscribe(
-    //   (val)=>{
-    //    if (val.students.length>0) {
-    //     this.students=val.students
-    //    }
-    //   }
-    // )
-
-    // this.store.select(selectStudentsSuccess).subscribe(
-    //   (val)=>{
-    //     console.log(val)
-    //   }
-    // )
-
-    this.store.select(selectStudentsSuccess).subscribe(
-      (val)=>{
-        if (val.students.length>0){
-          this.students=val.students;
-        }
-      }
+    this.subscriptions.add(
+        this.store.select(selectStudentsSuccess).subscribe(
+          (val)=>{
+            if (val.students.length>0){
+              this.students=val.students;
+            }
+          }
+        )
     )
-    this.store.select(selectStudentsDetailedSuccess).subscribe(
-      (val)=>{
-        console.log(val);
-      }
+
+    //Objeto de detalles de estudiante por medio de store 
+
+    this.subscriptions.add(
+      this.store.select(selectStudentsDetailedSuccess).subscribe(
+        (val)=>{
+            this.studentDetails=val;
+        }
+      )
     )
     
   }
 
-
-  // getStudents(){
-  //   this.subscriptions.add(
-  //     this.studentsService.getStudentsList().subscribe(
-  //       (data)=>{
-  //         this.students=data;
-  //       }
-  //     )
-  //   )
-  // }
-
   addStudent(){
-    let student = {
-      id: 100,
-      studentName:"Felipe",
-      studentSurname: "León",
-      course: "Angular",
-      class: "",
-      period: "",
-      email: "felipe@mail.com",
-      country: "México"
-    }
-    this.store.dispatch(postStudents({student:student}))
+    this.router.navigate(["home/students/add-edit"]);
   }
 
   editStudent(el:any){
@@ -133,14 +103,10 @@ export class StudentListComponent implements OnInit, OnDestroy {
   //Este método abre el modal de detalles (botón de información).
 
   openDialog(details:any){
-    this.studentDetails = details;
+    this.store.dispatch(getDetailedStudents({id:details.id}));
     let dialogRef = this.dialog.open(this.detail, { disableClose: false });
     dialogRef.afterClosed().subscribe((result) => { });
 
-  }
-
-  getStudentDetails(el:any){
-    this.store.dispatch(getDetailedStudents({id:el.id}))
   }
 
   ngOnDestroy(): void {

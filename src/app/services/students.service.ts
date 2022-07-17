@@ -132,7 +132,7 @@ export class StudentsService {
   }
 
   getStudentDetails(id:string):Observable<Students> {
-    return this.http.get<Students>(this.rootUrl+`/${id}`);
+    return this.http.get<Students>(this.rootUrl+`${id}`);
   }
 
 }

@@ -7,6 +7,10 @@ import { UsersFormComponent } from './users-form/users-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/modules/material.module';
 import { UsersComponent } from './users.component';
+import { StoreModule } from '@ngrx/store';
+import * as fromUsers from '../Store/Features/Users/users.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { UsersEffects } from '../Store/Features/Users/users.effects';
 
 
 @NgModule({
@@ -20,7 +24,9 @@ import { UsersComponent } from './users.component';
     CommonModule,
     UsersRoutingModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    StoreModule.forFeature(fromUsers.usersFeatureKey, fromUsers.reducer),
+    EffectsModule.forFeature([UsersEffects])
   ],
   exports: [
     UsersListComponent,

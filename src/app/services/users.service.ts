@@ -10,9 +10,9 @@ export class UsersService {
 
   //En caso de falso, el usuario no puede navegar el sitio.
 
-  adminLoggedIn = true;
+  adminLoggedIn = false;
 
-  userLoggedIn = true;
+  userLoggedIn = false;
 
   //MOCKAPI Usuarios
 
@@ -41,9 +41,9 @@ export class UsersService {
 
   //Traer lista de ususuarios de la MOCKAPI
 
-  getUsersList():Observable<any> {
+  getUsersList():Observable<Users[]> {
     
-    return this.http.get<any>(this.rootUrl);
+    return this.http.get<Users[]>(this.rootUrl);
 
   }
 
@@ -65,7 +65,7 @@ export class UsersService {
 
   //Eliminación de usuario
 
-  removeUser(id:number):Observable<Users> {
+  removeUser(id:string):Observable<Users> {
 
     return this.http.delete<Users>(this.rootUrl + id);
 
@@ -84,6 +84,10 @@ export class UsersService {
 
     return of(this.adminLoggedIn);
 
+  }
+
+  getUserDetails(id:string):Observable<Users> {
+    return this.http.get<Users>(this.rootUrl+`${id}`);
   }
 
 }

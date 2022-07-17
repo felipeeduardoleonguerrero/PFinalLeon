@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { StudentsService } from 'src/app/services/students.service';
+import { Store } from '@ngrx/store';
+import { postStudents } from '../../Store/Features/Students/students.actions';
 
 @Component({
   selector: 'app-students-form',
@@ -18,7 +20,7 @@ export class StudentsFormComponent implements OnInit, OnDestroy {
 
   subscriptions:Subscription;
 
-  constructor(private fb:FormBuilder, private studentsService:StudentsService, private router:Router) { }
+  constructor(private fb:FormBuilder, private studentsService:StudentsService, private router:Router, private store: Store<any>) { }
 
   ngOnInit(): void {
 
@@ -51,6 +53,7 @@ export class StudentsFormComponent implements OnInit, OnDestroy {
       this.studentForm.get('country')?.patchValue(this.studentToEdit.country);
       
     }
+    
   }
 
   onSubmit(){
@@ -60,11 +63,13 @@ export class StudentsFormComponent implements OnInit, OnDestroy {
     //Actualizar o actualizar al estudiante a la MOCKAPI
     
     if(!this.studentToEdit){
-      this.studentsService.postStudent(student).subscribe(
-      (val)=>{
-          this.router.navigate(['/home/students/list'])
-        }
-      )
+      // this.studentsService.postStudent(student).subscribe(
+      // (val)=>{
+      //     this.router.navigate(['/home/students/list'])
+      //   }
+      // )
+      this.store.dispatch(postStudents({student:student}));
+      this.router.navigate(['/home/students/list']);
     } else {
       student['id']=this.studentToEdit.id;
       this.studentsService.updateStudent(student).subscribe(

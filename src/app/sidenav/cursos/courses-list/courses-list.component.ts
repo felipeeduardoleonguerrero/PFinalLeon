@@ -2,10 +2,16 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { Course } from 'src/app/services/course';
 import { RegistrationService } from 'src/app/services/registration.service';
+import { Students } from 'src/app/services/students';
 import { StudentsService } from 'src/app/services/students.service';
 import { UsersService } from 'src/app/services/users.service';
+import { deleteCourse, getDetailedCourse } from '../../Store/Features/Courses/courses.actions';
+import { selectCourseDetailedSuccess, selectCoursesSuccess } from '../../Store/Features/Courses/courses.selectors';
+import { selectStudentsSuccess } from '../../Store/Features/Students/students.selectors';
 
 @Component({
   selector: 'app-courses-list',
@@ -13,12 +19,12 @@ import { UsersService } from 'src/app/services/users.service';
   styleUrls: ['./courses-list.component.scss']
 })
 export class CoursesListComponent implements OnInit {
-
+  
   @ViewChild('detail') detail: TemplateRef<any>;
 
-  students:any;
+  students:Students[];
 
-  courses:any;
+  courses:Course[];
 
   registration:any;
 
@@ -38,42 +44,61 @@ export class CoursesListComponent implements OnInit {
 
   public courseDetails:any;
 
-  public detailsData: MatTableDataSource<any>;
+  // public detailsData: MatTableDataSource<any>;
 
   @ViewChild('table') table: MatTable<any>;
 
+  @ViewChild('detailTable') detailTable: MatTable<any>;
+
   adminStatus:boolean;
 
-  constructor(private router:Router, private studentsService:StudentsService, public dialogDetails: MatDialog, private dialog: MatDialog, private registrationService:RegistrationService, private usersService:UsersService) { }
+  constructor(private router:Router, private studentsService:StudentsService, public dialogDetails: MatDialog, private dialog: MatDialog, private registrationService:RegistrationService, private usersService:UsersService, private store: Store<any>) { }
 
   ngOnInit(): void {
     
     this.subscriptions=new Subscription();
-    
-    //Suscripción a un servicio con observable
-    this.subscriptions.add(
-      this.studentsService.getCoursesList().subscribe(
-
-        (val)=>this.courses=val
-
-      )
-    )
-    
-    //Suscripción a un servicio con observable: estudiantes
-    this.subscriptions.add(
-      this.studentsService.getStudentsList().subscribe(
-
-        (val)=>this.students=val
-
-      )
-    )
 
     //Suscripción a un servicio con observable: inscripciones
+
     this.subscriptions.add(
       this.registrationService.getRegistrationList().subscribe(
 
         (val)=>this.registration=val
 
+      )
+    )
+
+    //Arreglo de cursos desde store
+
+    this.subscriptions.add(
+      this.store.select(selectCoursesSuccess).subscribe(
+        (val)=>{
+          if (val.courses.length>0){
+            this.courses=val.courses;
+          }
+        }
+      )
+    )
+
+    //Arreglo de estudiantes desde store
+
+    this.subscriptions.add(
+      this.store.select(selectStudentsSuccess).subscribe(
+        (val)=>{
+          if (val.students.length>0){
+            this.students=val.students;
+          }
+        }
+      )
+    )
+
+    //Arreglo de detalles del curso por medio de store 
+
+    this.subscriptions.add(
+      this.store.select(selectCourseDetailedSuccess).subscribe(
+        (val)=>{
+            this.courseDetails=val;
+        }
       )
     )
 
@@ -123,14 +148,7 @@ export class CoursesListComponent implements OnInit {
   }
 
   deleteCourse(el:any) {
-        
-    //Eliminación de curso
-
-    let index = this.courses.findIndex((course: { id: any; })=> course.id===el.id);
-    this.courses.splice(index,1);
-    this.table.renderRows();
-    this.studentsService.coursesList=this.courses!;
-
+    this.store.dispatch(deleteCourse({id:el.id}))
   }
 
   //Este método abre el modal de detalles (botón de información).
@@ -138,13 +156,14 @@ export class CoursesListComponent implements OnInit {
   openDialog(details:any){
 
     //Trae el objeto/fila del curso desde la tabla de detalles.
+
     this.courseDetails = details;
 
-    //Vacía el arreglo de inscripciones al mismo curso (inicializar detalles).
-    this.registrations=[];
+    // this.store.dispatch(getDetailedCourse({id:details.id}));
 
-    //console.log(this.registration);
-    //console.log(this.courseDetails);
+    // Vacía el arreglo de inscripciones al mismo curso (inicializar detalles).
+
+    this.registrations=[];
 
     this.registration.map((singleRegistration: any) => {
 
@@ -160,21 +179,15 @@ export class CoursesListComponent implements OnInit {
 
   }
 
-  // openDialog(details:any){
-  //   this.courseRegistration = details;
-  //   let dialogRef = this.dialog.open(this.detail, { disableClose: false });
-  //   dialogRef.afterClosed().subscribe((result) => { });
-
-  // }
-
 //Eliminación de inscripción
 
-  deleteRegistration(id:number){
+  deleteRegistration(id:string){
     this.registrationService.removeRegistration(id).subscribe(
       (data)=>{
         this.getRegistration();
       }
-    )
+    );
+    // this.detailTable.renderRows();
   }
 
   ngOnDestroy(): void {

@@ -2,8 +2,11 @@ import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/c
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
+import { deleteUser, getDetailedUser } from '../../Store/Features/Users/users.actions';
+import { selectUsersDetailedSuccess, selectUsersSuccess } from '../../Store/Features/Users/users.selectors';
 import { Users } from '../users';
 
 @Component({
@@ -25,27 +28,34 @@ export class UsersListComponent implements OnInit {
 
   detailsData: MatTableDataSource<any>;
 
-  constructor(private router:Router, public dialogDetails: MatDialog, private dialog: MatDialog, private usersService: UsersService) { }
+  constructor(private router:Router, public dialogDetails: MatDialog, private dialog: MatDialog, private usersService: UsersService, private store:Store<any>) { }
 
   ngOnInit(): void {
 
     this.subscriptions=new Subscription();
 
-    //Ejecución para obtener usuarios
-    
-    this.getUsers();
-  }
+    //Arreglo de usuarios desde store
 
-//Obtener usuarios
-
-  getUsers(){
     this.subscriptions.add(
-      this.usersService.getUsersList().subscribe(
-        (data)=>{
-          this.users=data;
+      this.store.select(selectUsersSuccess).subscribe(
+        (val)=>{
+          if (val.users.length>0){
+            this.users=val.users;
+          }
         }
       )
     )
+
+    //Objeto de detalles de estudiante por medio de store 
+
+    this.subscriptions.add(
+      this.store.select(selectUsersDetailedSuccess).subscribe(
+        (val)=>{
+            this.userDetails=val;
+        }
+      )
+    )
+
   }
 
   //Agregar usuario
@@ -63,18 +73,14 @@ export class UsersListComponent implements OnInit {
 
   //Eliminar usuario
 
-  deleteUser(id:number){
-    this.usersService.removeUser(id).subscribe(
-      (data)=>{
-        this.getUsers();
-      }
-    )
+  deleteUser(el:any){
+    this.store.dispatch(deleteUser({id:el.id}))
   }
 
   //Este método abre el modal de detalles (botón de información).
 
   openDialog(details:any){
-    this.userDetails = details;
+    this.store.dispatch(getDetailedUser({id:details.id}));
     let dialogRef = this.dialog.open(this.detail, { disableClose: false });
     dialogRef.afterClosed().subscribe((result) => { });
 
